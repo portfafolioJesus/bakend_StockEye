@@ -1,0 +1,28 @@
+{
+  "carpetas": {
+    "1": "entradas/sucursal_1",
+    "2": "entradas/sucursal_2"
+  },
+  "datos": "datos",
+  "modelo": {
+    "archivo": "modelos/modelo.pt",
+    "arquitectura_json": null,
+    "modo": null,
+    "umbral_vacio": null,
+    "dispositivo": "auto"
+  },
+  "revision_segundos": 30,
+  "estabilidad_segundos": 2,
+  "limites": {
+    "max_archivo_mb": 20,
+    "max_pixeles": 20000000,
+    "max_ram_gb": 4,
+    "max_vram_gb": 2,
+    "tiempo_max_s": 120,
+    "hilos_cpu": 2
+  },
+  "api": {
+    "host": "127.0.0.1",
+    "puerto": 8000
+  }
+}

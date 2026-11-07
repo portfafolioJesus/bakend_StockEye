@@ -1,0 +1,3 @@
+Copia aqui el modelo entrenado compatible con el nombre modelo.pt.
+Consulta README.md y docs/CONTRATO_MODELO.md.
+Este proyecto no incluye pesos entrenados ni un modelo de demostracion.

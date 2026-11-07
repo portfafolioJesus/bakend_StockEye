@@ -1,0 +1,2 @@
+Copia aqui las fotografias locales de Sucursal 2.
+Puedes cambiar esta ruta por la carpeta sincronizada de OneDrive en config.json.

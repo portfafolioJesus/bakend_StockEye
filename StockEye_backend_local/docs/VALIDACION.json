@@ -1,0 +1,27 @@
+{
+  "pruebas_aprobadas": 39,
+  "pruebas_fallidas": 0,
+  "duracion_segundos": 10.6,
+  "modelo_real_del_proyecto_probado": false,
+  "precision_predictiva_medida": false,
+  "inferencia_cpu_con_pesos_controlados_probada": true,
+  "servidor_http_en_proceso_independiente_probado": true,
+  "windows_probado": false,
+  "pesos_entrenados_incluidos": false,
+  "entorno": {
+    "fastapi": "0.162.0",
+    "uvicorn": "0.54.0",
+    "numpy": "2.5.4",
+    "Pillow": "12.3.0",
+    "torch": "2.7.1+cpu",
+    "transformers": "4.57.6",
+    "psutil": "7.2.2",
+    "opencv-python-headless": "5.0.0.93",
+    "pytest": "9.2.0",
+    "httpx": "0.28.1"
+  },
+  "fuentes": {
+    "StockEye_v6_corregido_(2) (1)(1).ipynb": "80f6f60579dca3d84febcd65350bd7d563f04e1546b0a8f32a1a6566ab2b2d41",
+    "StockEye_v6_corregido(1).zip": "a744b26cdd07afa7498dc81972ccdbd2420d2a35aa3597139c301c08f04057da"
+  }
+}
