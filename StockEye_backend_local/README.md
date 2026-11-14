@@ -2,14 +2,14 @@
 
 Este proyecto se abre en **Visual Studio Code** y se ejecuta en el PC. Lee fotografías desde dos carpetas, identifica su sucursal, las analiza con un modelo SegFormer y publica los resultados para la aplicación Android.
 
-La aplicación móvil está en [StockEye](../StockEye/README.md). El APK contiene el cliente Android; el modelo, la cola y el procesamiento permanecen en el PC. Visual Studio Code es el editor: el servidor que atiende las solicitudes es Uvicorn y la API está construida con FastAPI.
+La aplicación móvil está en StockEye, dentro de `duoc`. El APK contiene el cliente Android; el modelo, la cola y el procesamiento permanecen en el PC. Visual Studio Code es el editor: el servidor que atiende las solicitudes es Uvicorn y la API está construida con FastAPI.
 
 ## 1. Cómo funciona el recorrido completo
 
 ```mermaid
 flowchart TD
     Fotos["Fotos: sucursal_1 y sucursal_2"] --> Revisor["Revisor: confirma y copia archivos"]
-    Revisor --> Cola["Registro: cola SQLite"]
+    Revisor --> Cola["Registro: cola PostgreSQL"]
     Cola --> Motor["Motor SegFormer: una foto a la vez"]
     Motor --> Archivos["Original, máscara, marcada y JSON"]
     Archivos --> API["FastAPI: consultas HTTP"]
@@ -18,13 +18,13 @@ flowchart TD
 
 1. `Revisor.revisar()` busca imágenes en las dos carpetas. Confirma que tamaño y fecha de modificación permanezcan estables entre revisiones.
 2. El revisor copia cada entrada y calcula su SHA-256, una huella para identificar el contenido.
-3. `Registro.encolar()` guarda el trabajo en SQLite. La combinación de sucursal, nombre relativo y contenido evita registrar otra vez la misma captura.
+3. `Registro.encolar()` guarda el trabajo en PostgreSQL. La combinación de sucursal, nombre relativo y contenido evita registrar otra vez la misma captura.
 4. `Servicio.procesar_uno()` toma el siguiente trabajo pendiente y llama al motor.
 5. El motor identifica fondo, ocupado y vacío, calcula las medidas y devuelve una `Prediccion`.
 6. `Archivos.guardar()` conserva las imágenes y el JSON.
 7. Android consulta los resultados guardados mediante la API. Las consultas GET no vuelven a analizar la foto.
 
-**JSON** es un archivo de texto estructurado con campos y valores. **SQLite** es la base de datos local de la cola; no requiere instalar un servidor de base de datos aparte.
+**JSON** es un archivo de texto estructurado con campos y valores. **PostgreSQL** es el servidor de base de datos de la cola. Su configuración y migración están en [docs/POSTGRESQL.md](docs/POSTGRESQL.md). SQLite queda como origen histórico de importación.
 
 La revisión ocurre cada **30 segundos** por defecto. La primera incorporación suele producirse en la segunda revisión; luego cada imagen espera su turno. El procesador toma la siguiente al terminar la anterior, sin esperar otros 30 segundos.
 
@@ -36,7 +36,7 @@ La revisión ocurre cada **30 segundos** por defecto. La primera incorporación 
 | [entradas/sucursal_1/](entradas/sucursal_1/) | Fotografías de Sucursal 1. |
 | [entradas/sucursal_2/](entradas/sucursal_2/) | Fotografías de Sucursal 2. |
 | [modelos/](modelos/) | Modelo compatible utilizado por el motor. La configuración apunta a `modelo.pt`. |
-| `datos/` | Base de datos, bloqueo de instancia, copias pendientes y resultados. Su ubicación se configura. |
+| `datos/` | Bloqueo de carpeta, copias pendientes y resultados externos; la cola activa está en PostgreSQL. Su ubicación se configura. |
 | [tests/](tests/) | Pruebas de cola, API, modelo y proceso completo. |
 | [docs/](docs/) | Contrato del modelo e informes de validación. |
 | `stockeye_v5/`, `stockeye_v6/` | Notebooks, experimentos, conjuntos de datos y artefactos del trabajo del modelo. El servicio utiliza el `.pt` configurado; no ejecuta esos notebooks al arrancar. |
@@ -51,9 +51,9 @@ Se aceptan imágenes estáticas JPG, JPEG, PNG, WEBP, BMP y TIFF. Las carpetas d
 |---|---|
 | [iniciar.py](iniciar.py) | Punto de entrada. `main()` lee los argumentos, carga la configuración y ejecuta Uvicorn. `--comprobar-modelo` comprueba el `.pt` sin iniciar el servidor ni el revisor. |
 | [config.json](config.json) | Define las dos entradas, almacenamiento, modelo, revisión, límites y dirección del servidor. |
-| [stockeye/configuracion.py](stockeye/configuracion.py) | Los modelos `Modelo`, `Limites`, `API` y `Configuracion` validan los valores. `cargar_configuracion()` resuelve las rutas relativas respecto de `config.json`. `crear_carpetas()` prepara los directorios necesarios. |
+| [stockeye/configuracion.py](stockeye/configuracion.py) | Los modelos `BaseDatos`, `Modelo`, `Limites`, `API` y `Configuracion` validan los valores. `cargar_configuracion()` resuelve las rutas relativas respecto de `config.json`. `crear_carpetas()` prepara los directorios necesarios. |
 | [stockeye/procesador.py](stockeye/procesador.py) | `Revisor` detecta y copia entradas estables. `Servicio` coordina la cola, carga el motor, procesa trabajos y controla los dos hilos: revisión e inferencia. |
-| [stockeye/registro.py](stockeye/registro.py) | `Registro` maneja SQLite. `estable()` registra observaciones; `encolar()` agrega trabajos; `tomar()` toma el pendiente más antiguo; `terminar()` registra éxito o error; `listar()` permite consultar y paginar. |
+| [stockeye/registro.py](stockeye/registro.py) | `Registro` maneja PostgreSQL y verifica la migración del esquema antes del arranque. `estable()` registra observaciones; `encolar()` agrega trabajos; `tomar()` toma el pendiente más antiguo; `terminar()` registra éxito o error; `listar()` permite consultar y paginar. |
 | [stockeye/motor.py](stockeye/motor.py) | `MotorSegFormer` valida y carga el checkpoint, selecciona CPU/CUDA y ejecuta `inferir()`. `validar_imagen()` revisa formato, tamaño y píxeles. `Prediccion` agrupa el resultado que recibirá el guardado. |
 | [stockeye/inferencia_base/__init__.py](stockeye/inferencia_base/__init__.py) | Código matemático de inferencia: configuración, normalización, segmentación, mosaicos/TTA, geometría de góndolas, repisas, porcentajes y semáforos. El motor utiliza estas funciones. |
 | [stockeye/archivos.py](stockeye/archivos.py) | `Archivos` guarda resultados de forma atómica, genera la imagen amarilla, comprueba archivos y recupera análisis ya guardados después de una interrupción. |
@@ -78,7 +78,8 @@ Para leer el código en orden: `iniciar.py` → `configuracion.py` → `procesad
 | PyTorch, Transformers y Safetensors | Carga y ejecución del modelo compatible. |
 | NumPy, Pillow y OpenCV | Lectura y transformación de imágenes, máscaras y cálculos. |
 | psutil | Consulta del consumo de memoria del proceso. |
-| `sqlite3` de Python | Cola persistente de trabajos. |
+| `psycopg` | Conexión y transacciones de la cola PostgreSQL. |
+| `sqlite3` de Python | Lectura/snapshot del origen histórico para migrar. |
 | pytest y httpx | Pruebas automatizadas; son herramientas de desarrollo. |
 
 ## 4. Configuración
@@ -88,7 +89,7 @@ En [config.json](config.json):
 | Campo | Significado |
 |---|---|
 | `carpetas` | Debe contener exactamente las sucursales `1` y `2`, con carpetas diferentes que no se contengan entre sí. |
-| `datos` | Almacena la cola y resultados. Debe estar separado de las entradas. |
+| `datos` | Almacena copias pendientes y resultados; la cola reside en PostgreSQL. Debe estar separado de las entradas. |
 | `modelo.archivo` | Ruta al `.pt` compatible. Debe estar fuera de las entradas. |
 | `modelo.arquitectura_json` | Arquitectura auxiliar si el checkpoint no la incluye. El `.pt` preparado contiene su configuración. |
 | `modelo.modo`, `modelo.umbral_vacio` | Si son `null`, se leen del `.pt`. Deben corresponder a valores validados durante el trabajo del modelo. |
@@ -112,9 +113,11 @@ Los límites iniciales son 20 MB por archivo, 20 millones de píxeles, 4 GiB de 
 
 Las comprobaciones de tiempo y memoria ocurren entre operaciones: no interrumpen por la fuerza una llamada nativa de PyTorch. El tiempo de inferencia no incluye espera en cola ni escritura del resultado.
 
-Conserva `datos/cola.sqlite3`, las copias pendientes y sus resultados juntos. Evita sincronizar o editar concurrentemente esos archivos mientras el backend los utiliza. En esta copia, la carpeta está dentro de OneDrive; comprueba su disponibilidad local y el comportamiento de sincronización antes de usarla de forma continuada.
+Conserva la SQLite como respaldo histórico. Respalda PostgreSQL y sus archivos externos. No coloque el directorio activo del servidor en OneDrive. Las fotografías y resultados requieren disponibilidad local.
 
 ## 5. Preparar el entorno, iniciar y detener
+
+Antes del primer arranque, configure PostgreSQL, credenciales y migraciones según [docs/POSTGRESQL.md](docs/POSTGRESQL.md). La copia principal usa `stockeye_dev`, la otra `stockeye_copia_dev`; las pruebas usan exclusivamente `stockeye_test`. No se vuelve automáticamente a SQLite.
 
 Abre una terminal PowerShell:
 
@@ -215,7 +218,7 @@ Para el teléfono físico, sustituye el bloque `api` dentro de `config.json`:
 
 Reinicia el backend y utiliza en Android la IPv4 del PC obtenida con `ipconfig`. `0.0.0.0` es una dirección de escucha, no la dirección que se escribe en la app. Ambos equipos necesitan una red que permita comunicarse; permite la conexión de Windows en la red privada si se solicita.
 
-La API local funciona sin autenticación y está planteada para una red de prueba. El APK `debug` permite HTTP; la variante Android `release` requiere HTTPS. Para instalar y utilizar el cliente, sigue el [README de Android](../StockEye/README.md).
+La API local funciona sin autenticación y está planteada para una red de prueba. El APK `debug` permite HTTP; la variante Android `release` requiere HTTPS. Para instalar y utilizar el cliente, sigue el [README de Android](../../StockEye/README.md).
 
 ## 8. Cola, errores y recuperación
 
@@ -230,11 +233,13 @@ Con el backend detenido:
 .\.venv\Scripts\python.exe gestionar.py reintentar-errores
 ```
 
-Primero corrige la causa del error. Solo se reencolan trabajos que tengan una copia registrada. Un archivo rechazado por tamaño debe corregirse en su entrada. No borres SQLite para actualizar un modelo: perderías el historial.
+Primero corrige la causa del error. Solo se reencolan trabajos que tengan una copia registrada. Un archivo rechazado por tamaño debe corregirse en su entrada. No borres la base PostgreSQL ni sus respaldos para actualizar un modelo: perderías el historial.
 
 Después de una interrupción, los trabajos que estaban procesándose vuelven a pendiente. Si sus resultados ya se guardaron completos, se verifica su integridad para recuperarlos sin repetir la inferencia.
 
 ## 9. Pruebas y alcance de la validación
+
+Las pruebas actuales requieren `STOCKEYE_TEST_DATABASE_URL` para la base aislada `stockeye_test`; el fixture rechaza otros nombres antes de limpiar tablas. Consulte [docs/POSTGRESQL.md](docs/POSTGRESQL.md). Los resultados anteriores son antecedentes y no verifican por sí solos PostgreSQL.
 
 | Archivo | Qué comprueba |
 |---|---|

@@ -17,12 +17,21 @@ def main():
     cfg.crear_carpetas()
     bloqueo = InstanciaUnica(cfg.datos / "backend.lock")
     bloqueo.adquirir()
+    registro = None
     try:
-        registro = Registro(cfg.datos / "cola.sqlite3")
+        opciones = cfg.base_datos
+        registro = Registro(
+            opciones.conexion_dsn(), connect_timeout=opciones.connect_timeout,
+            statement_timeout_ms=opciones.statement_timeout_ms,
+        )
+        registro.adquirir_instancia()
+        registro.comprobar_version_esquema()
         if args.accion == "reintentar-errores":
             print("Trabajos devueltos a la cola:", registro.reintentar_errores())
         print(json.dumps(registro.conteos(), ensure_ascii=False, indent=2))
     finally:
+        if registro is not None:
+            registro.liberar_instancia()
         bloqueo.liberar()
 
 

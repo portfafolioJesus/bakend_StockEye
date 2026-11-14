@@ -1,10 +1,25 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+
+class BaseDatos(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    dsn: str = Field(default="host=127.0.0.1 port=5432 dbname=stockeye_dev user=stockeye_app", repr=False)
+    variable_entorno: str = "STOCKEYE_DATABASE_URL"
+    connect_timeout: int = Field(default=5, ge=1, le=120)
+    statement_timeout_ms: int = Field(default=20_000, ge=1)
+
+    def conexion_dsn(self) -> str:
+        valor = os.environ.get(self.variable_entorno, self.dsn).strip()
+        if not valor:
+            raise ValueError("La conexión PostgreSQL configurada está vacía.")
+        return valor
 
 
 class Modelo(BaseModel):
@@ -41,6 +56,7 @@ class Configuracion(BaseModel):
     revision_segundos: float = Field(default=30, ge=1)
     estabilidad_segundos: float = Field(default=2, ge=0)
     api: API = Field(default_factory=API)
+    base_datos: BaseDatos = Field(default_factory=BaseDatos)
 
     @model_validator(mode="after")
     def validar_carpetas(self):

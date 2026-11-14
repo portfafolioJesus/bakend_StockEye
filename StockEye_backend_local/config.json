@@ -24,5 +24,11 @@
   "api": {
     "host": "127.0.0.1",
     "puerto": 8000
+  },
+  "base_datos": {
+    "dsn": "host=127.0.0.1 port=5432 dbname=stockeye_copia_dev user=stockeye_app",
+    "variable_entorno": "STOCKEYE_DATABASE_URL",
+    "connect_timeout": 5,
+    "statement_timeout_ms": 20000
   }
 }

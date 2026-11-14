@@ -12,7 +12,7 @@ from .archivos import Archivos
 from .configuracion import Configuracion
 from .instancia import InstanciaUnica
 from .motor import MotorSegFormer
-from .registro import Registro, ahora
+from .registro import InstanciaPerdida, Registro, ahora
 
 log = logging.getLogger("stockeye")
 EXTENSIONES = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
@@ -102,7 +102,12 @@ class Servicio:
     def __init__(self, cfg: Configuracion, motor_factory=MotorSegFormer):
         self.cfg = cfg
         cfg.crear_carpetas()
-        self.registro = Registro(cfg.datos / "cola.sqlite3")
+        opciones = cfg.base_datos
+        self.registro = Registro(
+            opciones.conexion_dsn(), connect_timeout=opciones.connect_timeout,
+            statement_timeout_ms=opciones.statement_timeout_ms,
+        )
+        self.iniciado = False
         self.archivos = Archivos(cfg.resultados)
         self.revisor = Revisor(cfg, self.registro)
         self.motor_factory = motor_factory
@@ -126,8 +131,22 @@ class Servicio:
         finally:
             self.cargando_modelo = False
 
+    def _verificar_exclusion(self):
+        if self.iniciado:
+            self.registro.verificar_instancia()
+
+    def _perdida_exclusion(self):
+        self.parar.set()
+        self.error_modelo = "Se perdió la sesión de exclusión PostgreSQL; reinicie el backend."
+        log.error(self.error_modelo)
+
     def procesar_uno(self) -> bool:
         if self.motor is None: return False
+        try:
+            self._verificar_exclusion()
+        except InstanciaPerdida:
+            self._perdida_exclusion()
+            return False
         trabajo = self.registro.tomar()
         if trabajo is None: return False
         copia = Path(trabajo["copia"]) if trabajo["copia"] else None
@@ -135,10 +154,20 @@ class Servicio:
             if not self.archivos.recuperar(trabajo):
                 if copia is None or not copia.is_file(): raise FileNotFoundError("Falta la copia local de la imagen pendiente.")
                 prediccion = self.motor.inferir(copia)
+                self._verificar_exclusion()
                 self.archivos.guardar(trabajo, copia, prediccion)
+            self._verificar_exclusion()
             self.registro.terminar(trabajo["id"])
             log.info("Completada Sucursal %s: %s", trabajo["sucursal_id"], trabajo["nombre"])
+        except InstanciaPerdida:
+            self._perdida_exclusion()
+            return False
         except Exception as error:
+            try:
+                self._verificar_exclusion()
+            except InstanciaPerdida:
+                self._perdida_exclusion()
+                return False
             self.registro.terminar(trabajo["id"], f"{type(error).__name__}: {error}")
             log.exception("Falló una imagen; se continúa con la siguiente: %s", trabajo["nombre"])
         else:
@@ -150,7 +179,12 @@ class Servicio:
 
     def _escuchar(self):
         while not self.parar.is_set():
-            try: self.revisor.revisar()
+            try:
+                self._verificar_exclusion()
+                self.revisor.revisar()
+            except InstanciaPerdida:
+                self._perdida_exclusion()
+                return
             except Exception:
                 self.revisor.ultimo_error = "Falló una revisión; consulta el registro del backend."
                 log.exception("Falló una revisión de carpetas")
@@ -167,15 +201,37 @@ class Servicio:
 
     def iniciar(self, ejecutar_hilos=True):
         self.instancia.adquirir()
-        recuperados = self.registro.recuperar_interrumpidos()
-        if recuperados: log.info("Recuperados %s análisis interrumpidos", recuperados)
-        if ejecutar_hilos:
-            self.hilos = [threading.Thread(target=self._escuchar, name="stockeye-revisor", daemon=True),
-                          threading.Thread(target=self._trabajar, name="stockeye-inferencia", daemon=True)]
-            for hilo in self.hilos: hilo.start()
+        try:
+            self.registro.adquirir_instancia()
+            self.registro.comprobar_version_esquema()
+            recuperados = self.registro.recuperar_interrumpidos()
+            if recuperados:
+                log.info("Recuperados %s análisis interrumpidos", recuperados)
+            self.iniciado = True
+            if ejecutar_hilos:
+                self.hilos = [
+                    threading.Thread(target=self._escuchar, name="stockeye-revisor", daemon=True),
+                    threading.Thread(target=self._trabajar, name="stockeye-inferencia", daemon=True),
+                ]
+                for hilo in self.hilos:
+                    hilo.start()
+        except BaseException:
+            self.parar.set()
+            for hilo in self.hilos:
+                if hilo.is_alive():
+                    hilo.join()
+            self.iniciado = False
+            self.registro.liberar_instancia()
+            self.instancia.liberar()
+            raise
 
     def detener(self):
         self.parar.set()
-        # Se espera la fotografía en curso antes de liberar la cola.
-        for hilo in self.hilos: hilo.join()
-        self.instancia.liberar()
+        try:
+            for hilo in self.hilos:
+                if hilo.is_alive():
+                    hilo.join()
+        finally:
+            self.iniciado = False
+            self.registro.liberar_instancia()
+            self.instancia.liberar()

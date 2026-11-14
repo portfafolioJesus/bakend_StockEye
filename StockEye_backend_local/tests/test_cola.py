@@ -143,7 +143,11 @@ def test_reintento_de_error_conserva_identificador(cfg):
     foto(cfg.carpetas[1] / "foto.png")
     s = Servicio(cfg, MotorPrueba); encolar(s)
     trabajo = s.registro.tomar(); s.registro.terminar(trabajo["id"], "Fallo temporal")
-    assert s.registro.reintentar_errores() == 1
+    s.registro.adquirir_instancia()
+    try:
+        assert s.registro.reintentar_errores() == 1
+    finally:
+        s.registro.liberar_instancia()
     s.cargar_motor(); s.procesar_uno()
     assert s.registro.obtener(trabajo["id"])["estado"] == "completada"
 

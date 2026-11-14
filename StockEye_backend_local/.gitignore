@@ -11,3 +11,8 @@ entradas/**/*.webp
 entradas/**/*.bmp
 entradas/**/*.tif
 entradas/**/*.tiff
+.env
+.env.*
+!.env.example
+*.pgpass
+*.credential.xml
