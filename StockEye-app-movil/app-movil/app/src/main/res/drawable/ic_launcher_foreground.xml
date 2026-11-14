@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícono: un ojo (visión artificial) sobre tres repisas con los colores del semáforo. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Ojo -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M31,48 Q54,26 77,48 Q54,70 31,48 Z" />
+    <path
+        android:fillColor="#12355E"
+        android:pathData="M44,48 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M50,48 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z" />
+    <!-- Repisas en colores del semáforo -->
+    <path
+        android:fillColor="#2E9E5B"
+        android:pathData="M36,66 h11 v5 h-11 z" />
+    <path
+        android:fillColor="#F2B705"
+        android:pathData="M49,66 h10 v5 h-10 z" />
+    <path
+        android:fillColor="#E5484D"
+        android:pathData="M61,66 h11 v5 h-11 z" />
+</vector>
