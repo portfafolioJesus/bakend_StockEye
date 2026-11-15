@@ -1,0 +1,17 @@
+# Secretos y datos locales
+.env
+secretos/
+backups/
+backend/.env
+backend/datos/
+backend/modelos/*.pt
+backend/modelos/*.onnx
+backend/.venv*/
+**/__pycache__/
+.pytest_cache/
+web/node_modules/
+web/dist/
+
+# Fotos reales dejadas para el importador
+entradas/
+dist/

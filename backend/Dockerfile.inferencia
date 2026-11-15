@@ -1,0 +1,27 @@
+# stockeye-inferencia: worker con onnxruntime (CPU). Sin PyTorch → ~0,8 GB de RAM por worker.
+#   docker build -f backend/Dockerfile.inferencia -t stockeye-inferencia .
+# GPU (3 GB de VRAM): --build-arg ORT=onnxruntime-gpu  y  INFERENCIA_DISPOSITIVO=cuda
+# (requiere nvidia-container-toolkit en el servidor y una imagen base con CUDA 12).
+ARG BASE=python:3.12-slim
+FROM ${BASE} AS deps
+ARG ORT=onnxruntime
+ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
+COPY backend/requirements/base.txt backend/requirements/inferencia.txt /tmp/req/
+RUN python -m venv /opt/venv \
+ && sed -i "s/^onnxruntime==/${ORT}==/" /tmp/req/inferencia.txt \
+ && /opt/venv/bin/pip install -r /tmp/req/inferencia.txt
+
+FROM ${BASE}
+ENV PATH=/opt/venv/bin:$PATH PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 \
+    DATOS_DIR=/data MODELOS_DIR=/modelos TZ=America/Santiago \
+    OMP_NUM_THREADS=1 STOCKEYE_LATIDO=/tmp/worker.latido
+RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 && rm -rf /var/lib/apt/lists/* \
+ && useradd --create-home --uid 1000 stockeye && mkdir -p /data /modelos && chown stockeye /data /modelos
+COPY --from=deps /opt/venv /opt/venv
+WORKDIR /app
+COPY backend/stockeye /app/stockeye
+USER stockeye
+# Sano = el bucle del worker latió en el último minuto
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD python -c "import os,time,sys; p=os.environ['STOCKEYE_LATIDO']; sys.exit(0 if os.path.exists(p) and time.time()-float(open(p).read() or 0) < 60 else 1)"
+CMD ["python", "-m", "stockeye.cli", "worker"]
