@@ -1,0 +1,47 @@
+StockEye - Script para crear y poblar la base de datos
+=======================================================
+
+Motor: PostgreSQL 16
+
+Archivos (ejecutar en este orden). En este repositorio están en db/migraciones/ y db/seed/:
+  1. 001_esquema.sql         Tablas, tipos, reglas de tickets, historial y vistas.
+  2. 002_produccion.sql      Push, Web Push, configuración de IA, cola de tareas, ROI de cámaras.
+  3. 003_carga_de_fotos.sql  Carga de fotos desde el panel y desde la carpeta de entradas.
+  4. 004_categorias.sql      Catálogo de 19 categorías de producto.
+  5. seed_demo.sql           Datos de prueba: 2 recintos, 8 usuarios, 8 góndolas, 8 cámaras, 5 tickets.
+
+Atajo: stockeye_completo.sql junta los 5 archivos en uno solo.
+
+Cómo ejecutarlo
+---------------
+  createdb stockeye
+  psql -d stockeye -v ON_ERROR_STOP=1 -f stockeye_completo.sql
+
+Con Docker (como en el manual de instalación) la API aplica las migraciones sola al iniciar
+(AUTO_MIGRAR=true) y la demo se carga con:
+  docker compose --profile demo run --rm seed
+
+Usuarios de demo (solo desarrollo): admin@stockeye.test, cmunoz@stockeye.test (supervisora),
+dsoto@stockeye.test (reponedor), etc. Todos con la clave indicada en el encabezado de seed_demo.sql.
+
+Verificación (15-11-2026, PostgreSQL 16, base vacía, sin errores):
+  analisis_ia            1 filas
+  camara                 8 filas
+  categoria              19 filas
+  comentario             3 filas
+  configuracion_ia       1 filas
+  deteccion              12 filas
+  dispositivo_push       0 filas
+  gondola                8 filas
+  historial_ticket       10 filas
+  imagen                 8 filas
+  modelo_ia              1 filas
+  notificacion           12 filas
+  prediccion             8 filas
+  recinto                2 filas
+  tarea                  0 filas
+  ticket                 5 filas
+  ticket_imagen          7 filas
+  usuario                8 filas
+  usuario_recinto        7 filas
+  web_push_suscripcion   0 filas

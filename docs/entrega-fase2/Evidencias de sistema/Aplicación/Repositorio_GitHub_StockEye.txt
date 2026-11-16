@@ -1,0 +1,39 @@
+StockEye - Repositorios GitHub del proyecto
+===========================================
+Proyecto APT - Fase 2 - Duoc UC - Cliente: Walmart Chile
+Equipo: Jesús González · Ignacio Ruz · Claudio Galiano
+
+1) Repositorio de código del sistema (desarrollo)
+   https://github.com/portfafolioJesus/bakend_StockEye
+   Ramas: main (estable) · feature/v2 (desarrollo)
+   Contenido:
+     backend/              API REST FastAPI (/api/v1), worker de inferencia ONNX,
+                           notificador (FCM + Web Push), servicio de IA (Groq),
+                           importador de carpetas, CLI y pruebas (pytest)
+     web/                  Panel web React + Vite + TypeScript + Tailwind
+                           (supervisor y administrador)
+     StockEye-app-movil/   App Android Kotlin + Jetpack Compose (reponedor)
+     capturador/           Captura de cámaras IP (RTSP / snapshot) en cada recinto
+     db/migraciones/       001_esquema · 002_produccion · 003_carga_de_fotos · 004_categorias
+     db/seed/              seed_demo.sql (datos de demostración)
+     docs/                 API.md · ARQUITECTURA.md · MANUAL_INSTALACION.md
+     docker-compose.yml    Levanta todos los servicios
+   Documentación principal: README.md y docs/MANUAL_INSTALACION.md
+
+2) Repositorio de auditoría (evidencias para Duoc)
+   https://github.com/portfafolioJesus/proyecto-de-titulo
+   Contenido:
+     Fase 1/   Definición del proyecto, evidencias grupales e individuales
+     Fase 2/   Evidencias individuales y grupales, evidencias de documentación
+               (CU, planillas, diagramas de actividad, RF/RNF, SCRUM),
+               evidencias de sistema (base de datos, app, RESUMEN de avance CU)
+     desarrollo/  Prototipos (app móvil demo)
+
+3) Repositorio de experimentos del modelo de visión
+   https://github.com/Ruhtenio/YOLO_Versions
+   Versiones y pruebas de los modelos de detección/segmentación (YOLO, SegFormer).
+
+Gestión del proyecto: Jira, espacio StockEye (clave SKT).
+
+Cómo ejecutar el sistema: ver "Instructivo plan de instalación" (ANEXOS) o
+docs/MANUAL_INSTALACION.md en el repositorio de código.
