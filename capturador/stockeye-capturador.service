@@ -1,0 +1,17 @@
+# /etc/systemd/system/stockeye-capturador.service   (instalación sin Docker)
+#   sudo systemctl daemon-reload && sudo systemctl enable --now stockeye-capturador
+#   journalctl -u stockeye-capturador -f
+[Unit]
+Description=StockEye - capturador de camaras del recinto
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=stockeye
+WorkingDirectory=/opt/stockeye-capturador
+ExecStart=/opt/stockeye-capturador/.venv/bin/python capturador.py /etc/stockeye/camaras.json
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,222 @@
+{
+  "esquema": "stockeye-backend-1",
+  "analisis_id": "5a07e37a28a943e7929d517a693830bd",
+  "captura_id": "5a07e37a28a943e7929d517a693830bd",
+  "foto": "IMG-20261005-WA0016.jpg",
+  "sucursal_id": 1,
+  "sucursal": "Sucursal 1",
+  "sha256_original": "ff022b59799c41739641b8193ffe41d3c94ef747dc6021b859a21ccbd893542e",
+  "fecha_analisis": "2026-11-07T16:18:38.718511+00:00",
+  "estado_proceso": "completado",
+  "estado_medicion": "parcial",
+  "version_modelo": "pt-6f01f5f967ec",
+  "modelo_sha256": "6f01f5f967ece93a77107b9ac82765e3d817858128511d926fc221616bf22b2d",
+  "pipeline": "stockeye-v6-corregido-1",
+  "segundos": 18.366,
+  "operacion": {
+    "modo": "mosaicos+tta",
+    "umbral_vacio": 0.5
+  },
+  "recursos": {
+    "ram_gb": 0.5970039367675781,
+    "vram_gb": 0.0
+  },
+  "dimensiones": {
+    "ancho": 1600,
+    "alto": 900
+  },
+  "coordenadas": "pixeles_de_imagen_original_decodificada_con_orientacion_exif",
+  "cantidad_gondolas_detectadas": 1,
+  "cantidad_regiones_vacias": 3,
+  "gondolas": [
+    {
+      "id_local": 1,
+      "gondola_id": null,
+      "estado": "parcial",
+      "pct_vacio_observado": 0.38,
+      "pct_vacio_gondola_completa": null,
+      "pct_vacio_rectificado": 0.37,
+      "semaforo": "revisar",
+      "alerta": false,
+      "cantidad_regiones_vacias": 3,
+      "unidad_conteo": "regiones_conexas_no_instancias",
+      "cobertura_roi": null,
+      "cuadrilatero": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1599.0,
+          0.0
+        ],
+        [
+          1599.0,
+          867.0
+        ],
+        [
+          0.0,
+          899.0
+        ]
+      ],
+      "repisas_confiables": true,
+      "motivo_repisas": "bordes_y_areas_validos",
+      "repisas": [
+        {
+          "numero": 1,
+          "pct": 0.01,
+          "area": 210697,
+          "cuadrilatero": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1599.0,
+              0.0
+            ],
+            [
+              1599.0,
+              131.1300048828125
+            ],
+            [
+              0.0,
+              135.97000122070312
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 2,
+          "pct": 2.24,
+          "area": 231200,
+          "cuadrilatero": [
+            [
+              0.0,
+              135.97000122070312
+            ],
+            [
+              1599.0,
+              131.1300048828125
+            ],
+            [
+              1599.0,
+              272.0199890136719
+            ],
+            [
+              0.0,
+              282.05999755859375
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 3,
+          "pct": 0.0,
+          "area": 194400,
+          "cuadrilatero": [
+            [
+              0.0,
+              282.05999755859375
+            ],
+            [
+              1599.0,
+              272.0199890136719
+            ],
+            [
+              1599.0,
+              390.1499938964844
+            ],
+            [
+              0.0,
+              404.54998779296875
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 4,
+          "pct": 0.01,
+          "area": 366400,
+          "cuadrilatero": [
+            [
+              0.0,
+              404.54998779296875
+            ],
+            [
+              1599.0,
+              390.1499938964844
+            ],
+            [
+              1599.0,
+              614.489990234375
+            ],
+            [
+              0.0,
+              637.1699829101562
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 5,
+          "pct": 0.0,
+          "area": 207200,
+          "cuadrilatero": [
+            [
+              0.0,
+              637.1699829101562
+            ],
+            [
+              1599.0,
+              614.489990234375
+            ],
+            [
+              1599.0,
+              740.2000122070312
+            ],
+            [
+              0.0,
+              767.52001953125
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 6,
+          "pct": 0.0,
+          "area": 178356,
+          "cuadrilatero": [
+            [
+              0.0,
+              767.52001953125
+            ],
+            [
+              1599.0,
+              740.2000122070312
+            ],
+            [
+              1599.0,
+              867.0
+            ],
+            [
+              0.0,
+              899.0
+            ]
+          ],
+          "semaforo": "revisar"
+        }
+      ]
+    }
+  ],
+  "archivos": {
+    "original": "original.jpg",
+    "mascara": "mascara.png",
+    "superpuesta": "superpuesta.jpg"
+  },
+  "sha256_archivos": {
+    "original.jpg": "ff022b59799c41739641b8193ffe41d3c94ef747dc6021b859a21ccbd893542e",
+    "mascara.png": "eb35ebab3a0fcffcb02fa3b22bca3f2f639c8dc1b866c22b556d5fd764778fa1",
+    "superpuesta.jpg": "950ac44638c7c744f62919faf03f1c4a06de76b68d37a68a3efb84dce7d538df"
+  }
+}

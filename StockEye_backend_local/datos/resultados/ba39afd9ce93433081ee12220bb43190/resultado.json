@@ -1,0 +1,126 @@
+{
+  "esquema": "stockeye-backend-1",
+  "analisis_id": "ba39afd9ce93433081ee12220bb43190",
+  "captura_id": "ba39afd9ce93433081ee12220bb43190",
+  "foto": "IMG-20261005-WA0031.jpg",
+  "sucursal_id": 2,
+  "sucursal": "Sucursal 2",
+  "sha256_original": "e2b6b71d7cdcdbeef35add01b39b2b9f54355a75a321a7a194112731facc24f9",
+  "fecha_analisis": "2026-11-07T16:16:39.372691+00:00",
+  "estado_proceso": "completado",
+  "estado_medicion": "parcial",
+  "version_modelo": "pt-6f01f5f967ec",
+  "modelo_sha256": "6f01f5f967ece93a77107b9ac82765e3d817858128511d926fc221616bf22b2d",
+  "pipeline": "stockeye-v6-corregido-1",
+  "segundos": 18.4017,
+  "operacion": {
+    "modo": "mosaicos+tta",
+    "umbral_vacio": 0.5
+  },
+  "recursos": {
+    "ram_gb": 0.5633926391601562,
+    "vram_gb": 0.0
+  },
+  "dimensiones": {
+    "ancho": 1600,
+    "alto": 900
+  },
+  "coordenadas": "pixeles_de_imagen_original_decodificada_con_orientacion_exif",
+  "cantidad_gondolas_detectadas": 1,
+  "cantidad_regiones_vacias": 15,
+  "gondolas": [
+    {
+      "id_local": 1,
+      "gondola_id": null,
+      "estado": "parcial",
+      "pct_vacio_observado": 3.2,
+      "pct_vacio_gondola_completa": null,
+      "pct_vacio_rectificado": 3.2,
+      "semaforo": "revisar",
+      "alerta": false,
+      "cantidad_regiones_vacias": 15,
+      "unidad_conteo": "regiones_conexas_no_instancias",
+      "cobertura_roi": null,
+      "cuadrilatero": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1599.0,
+          0.0
+        ],
+        [
+          1599.0,
+          899.0
+        ],
+        [
+          0.0,
+          899.0
+        ]
+      ],
+      "repisas_confiables": true,
+      "motivo_repisas": "bordes_y_areas_validos",
+      "repisas": [
+        {
+          "numero": 1,
+          "pct": 6.32,
+          "area": 438400,
+          "cuadrilatero": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1599.0,
+              0.0
+            ],
+            [
+              1599.0,
+              273.07000732421875
+            ],
+            [
+              0.0,
+              273.07000732421875
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 2,
+          "pct": 1.83,
+          "area": 1003200,
+          "cuadrilatero": [
+            [
+              0.0,
+              273.07000732421875
+            ],
+            [
+              1599.0,
+              273.07000732421875
+            ],
+            [
+              1599.0,
+              899.0
+            ],
+            [
+              0.0,
+              899.0
+            ]
+          ],
+          "semaforo": "revisar"
+        }
+      ]
+    }
+  ],
+  "archivos": {
+    "original": "original.jpg",
+    "mascara": "mascara.png",
+    "superpuesta": "superpuesta.jpg"
+  },
+  "sha256_archivos": {
+    "original.jpg": "e2b6b71d7cdcdbeef35add01b39b2b9f54355a75a321a7a194112731facc24f9",
+    "mascara.png": "658b4e45e3aaa0aa95656533ecab195d120e5f74c374dfa4b07f27d4917c07a8",
+    "superpuesta.jpg": "2fba8710747803ef0853751473d8953de0143e830afc338020d21033228ca3a9"
+  }
+}

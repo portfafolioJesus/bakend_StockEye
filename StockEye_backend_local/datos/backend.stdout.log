@@ -1,0 +1,5 @@
+StockEye: http://127.0.0.1:8000/docs
+El revisor confirma cada archivo en dos revisiones; después se procesa uno por uno.
+Para cerrar: Ctrl+C. Se espera la fotografía en curso.
+INFO:     127.0.0.1:57041 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59844 - "GET /health HTTP/1.1" 200 OK

@@ -1,0 +1,198 @@
+{
+  "esquema": "stockeye-modelo-1",
+  "nombre": "segformer-mit-b1",
+  "version": "v1",
+  "familia": "SEGFORMER",
+  "formato": "onnx",
+  "archivo": "segformer-mit-b1-v1.onnx",
+  "sha256": "3487366c592c11b3f455f9433c69b6e3b3a1fefa833238a3d56c145e6525a129",
+  "clases": {
+    "0": "fondo",
+    "1": "ocupado",
+    "2": "vacio"
+  },
+  "umbral_confianza": 0.5,
+  "parametros": {
+    "lado": 1280,
+    "pixeles_max": 740000,
+    "hilos_recomendados": 2,
+    "modo": "completa",
+    "area_min_gondola": 0.01,
+    "area_min_caja": 0.002,
+    "margen_borde_px": 3
+  },
+  "metricas": {
+    "epoca": 19.0,
+    "perdida": 0.4172,
+    "segundos": 83.3,
+    "iou_vacio": 0.3544,
+    "iou_gondola": 0.8181,
+    "puntaje": 0.5862,
+    "train_iou_vacio": 0.4889
+  },
+  "origen": {
+    "checkpoint": "best.pt",
+    "sha256": "8828a2b27a009db84500cd2055ca3731197f264cacc1eb8529a09fbe80575c17",
+    "modelo_base": "nvidia/mit-b1",
+    "epoca": 19,
+    "arquitectura": {
+      "return_dict": true,
+      "output_hidden_states": false,
+      "torchscript": false,
+      "dtype": null,
+      "pruned_heads": {},
+      "tie_word_embeddings": true,
+      "chunk_size_feed_forward": 0,
+      "is_encoder_decoder": false,
+      "is_decoder": false,
+      "cross_attention_hidden_size": null,
+      "add_cross_attention": false,
+      "tie_encoder_decoder": false,
+      "architectures": null,
+      "finetuning_task": null,
+      "id2label": {
+        "0": "fondo",
+        "1": "ocupado",
+        "2": "vacio"
+      },
+      "label2id": {
+        "fondo": 0,
+        "ocupado": 1,
+        "vacio": 2
+      },
+      "task_specific_params": null,
+      "problem_type": null,
+      "tokenizer_class": null,
+      "prefix": null,
+      "bos_token_id": null,
+      "pad_token_id": null,
+      "eos_token_id": null,
+      "sep_token_id": null,
+      "decoder_start_token_id": null,
+      "max_length": 20,
+      "min_length": 0,
+      "do_sample": false,
+      "early_stopping": false,
+      "num_beams": 1,
+      "temperature": 1.0,
+      "top_k": 50,
+      "top_p": 1.0,
+      "typical_p": 1.0,
+      "repetition_penalty": 1.0,
+      "length_penalty": 1.0,
+      "no_repeat_ngram_size": 0,
+      "encoder_no_repeat_ngram_size": 0,
+      "bad_words_ids": null,
+      "num_return_sequences": 1,
+      "output_scores": false,
+      "return_dict_in_generate": false,
+      "forced_bos_token_id": null,
+      "forced_eos_token_id": null,
+      "remove_invalid_values": false,
+      "exponential_decay_length_penalty": null,
+      "suppress_tokens": null,
+      "begin_suppress_tokens": null,
+      "num_beam_groups": 1,
+      "diversity_penalty": 0.0,
+      "_name_or_path": "",
+      "transformers_version": "4.57.6",
+      "tf_legacy_loss": false,
+      "use_bfloat16": false,
+      "num_channels": 3,
+      "num_encoder_blocks": 4,
+      "depths": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "sr_ratios": [
+        8,
+        4,
+        2,
+        1
+      ],
+      "hidden_sizes": [
+        64,
+        128,
+        320,
+        512
+      ],
+      "patch_sizes": [
+        7,
+        3,
+        3,
+        3
+      ],
+      "strides": [
+        4,
+        2,
+        2,
+        2
+      ],
+      "mlp_ratios": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "num_attention_heads": [
+        1,
+        2,
+        5,
+        8
+      ],
+      "hidden_act": "gelu",
+      "hidden_dropout_prob": 0.0,
+      "attention_probs_dropout_prob": 0.0,
+      "classifier_dropout_prob": 0.1,
+      "initializer_range": 0.02,
+      "drop_path_rate": 0.1,
+      "layer_norm_eps": 1e-06,
+      "decoder_hidden_size": 256,
+      "reshape_last_stage": true,
+      "semantic_loss_ignore_index": 255,
+      "model_type": "segformer",
+      "output_attentions": false
+    }
+  },
+  "benchmark": {
+    "presupuesto_s": 3.0,
+    "margen": 0.8,
+    "resultados": [
+      {
+        "pixeles_max": 900000,
+        "hilos": 2,
+        "p50_s": 2.395,
+        "p95_s": 2.46,
+        "max_s": 2.46,
+        "n": 9,
+        "cumple": false
+      },
+      {
+        "pixeles_max": 740000,
+        "hilos": 2,
+        "p50_s": 1.827,
+        "p95_s": 1.896,
+        "max_s": 1.896,
+        "n": 9,
+        "cumple": true
+      },
+      {
+        "pixeles_max": 900000,
+        "hilos": 4,
+        "p50_s": 1.647,
+        "p95_s": 1.988,
+        "max_s": 1.988,
+        "n": 9,
+        "cumple": true
+      }
+    ],
+    "rss_max_mb": 1986,
+    "equipo": {
+      "cpu": "AMD Ryzen 5 3400G with Radeon Vega Graphics",
+      "nucleos_logicos": 8
+    },
+    "fecha": "2026-11-14T23:24:10.294027+00:00"
+  }
+}

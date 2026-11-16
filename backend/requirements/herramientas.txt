@@ -1,0 +1,8 @@
+# Solo para exportar best.pt → ONNX en un PC de desarrollo (no va al servidor)
+-r inferencia.txt
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+transformers==4.57.6
+safetensors
+onnx
+onnxscript

@@ -1,0 +1,7 @@
+FROM stockeye-inferencia:latest
+USER root
+COPY --from=stockeye-backend:latest /opt/venv/lib/python3.12/site-packages/ /opt/venv/lib/python3.12/site-packages/
+RUN python -m pip install --no-cache-dir pytest==9.2.0
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/pruebas/backend DB_DIR=/pruebas/db
+WORKDIR /pruebas/backend
+USER stockeye

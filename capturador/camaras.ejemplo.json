@@ -1,0 +1,28 @@
+{
+  "api_url": "https://stockeye.tu-empresa.cl/api/v1/ingesta",
+  "verificar_tls": true,
+  "camaras": [
+    {
+      "codigo": "R01-CAM03",
+      "api_key": "stk_r01cam03_PEGAR_AQUI_LA_CLAVE_QUE_MOSTRO_EL_PANEL",
+      "fuente": "rtsp://192.168.1.20:554/Streaming/Channels/102",
+      "usuario": "lectura",
+      "clave": "CLAVE_SOLO_LECTURA",
+      "intervalo_seg": 300
+    },
+    {
+      "codigo": "R01-CAM04",
+      "api_key": "stk_r01cam04_...",
+      "fuente": "http://192.168.1.21/cgi-bin/snapshot.cgi?channel=1",
+      "usuario": "lectura",
+      "clave": "CLAVE_SOLO_LECTURA",
+      "intervalo_seg": 300
+    },
+    {
+      "codigo": "R01-CAM05",
+      "api_key": "demo-R01-CAM05",
+      "fuente": "/home/stockeye/videos/gondola_prueba.mp4",
+      "intervalo_seg": 60
+    }
+  ]
+}

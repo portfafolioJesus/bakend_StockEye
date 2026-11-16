@@ -1,0 +1,143 @@
+# StockEye · stack completo en un servidor (4 GB de RAM).
+#
+#   cp .env.example .env        # y completa las claves
+#   docker compose up -d --build
+#   docker compose --profile demo run --rm seed      # (opcional) datos de demostración
+#
+# Escalar la inferencia:
+#   docker compose up -d --scale worker=2             # pool compartido (turnos por recinto)
+#   docker compose -f docker-compose.yml -f docker-compose.recintos.yml up -d   # workers dedicados
+#
+# Presupuesto de memoria (mem_limit): postgres 512M + api 384M + worker 1.2G + notificador 160M
+# + ia 200M + importador 160M + web 64M ≈ 2,7 GB, deja ~1,5 GB para el sistema operativo y Docker.
+
+x-backend: &backend
+  image: stockeye-backend:${STOCKEYE_VERSION:-latest}
+  build:
+    context: .
+    dockerfile: backend/Dockerfile
+  env_file: .env
+  environment: &entorno
+    DATABASE_URL: postgresql://${POSTGRES_USER:-stockeye}:${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}@postgres:5432/${POSTGRES_DB:-stockeye}
+    DATOS_DIR: /data
+    MODELOS_DIR: /modelos
+    FCM_CREDENCIALES: ${FCM_CREDENCIALES:-}
+  volumes:
+    - datos:/data
+    - ${MODELOS_HOST:-./backend/modelos}:/modelos
+    - ${SECRETOS_HOST:-./secretos}:/secretos:ro
+  depends_on:
+    postgres:
+      condition: service_healthy
+  restart: unless-stopped
+  logging: &logs
+    driver: json-file
+    options: { max-size: "10m", max-file: "5" }
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-stockeye}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}
+      POSTGRES_DB: ${POSTGRES_DB:-stockeye}
+      TZ: America/Santiago
+    # Ajustado para un servidor chico; aumentar shared_buffers si sobra RAM.
+    command: >
+      postgres -c shared_buffers=128MB -c effective_cache_size=384MB -c work_mem=4MB
+               -c maintenance_work_mem=64MB -c max_connections=60 -c log_min_duration_statement=500
+    volumes:
+      - - pgdata18:/var/lib/postgresql
+      - ./backups:/backups
+    ports:
+      - "${POSTGRES_BIND:-127.0.0.1}:${POSTGRES_PUERTO:-5433}:5432"   # DBeaver / psql desde el host
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-stockeye} -d ${POSTGRES_DB:-stockeye}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 512m
+    restart: unless-stopped
+    logging: *logs
+
+  api:
+    <<: *backend
+    command: ["python", "-m", "stockeye.cli", "api", "--host", "0.0.0.0", "--port", "8000", "--workers", "${API_WORKERS:-2}"]
+    expose: ["8000"]
+    mem_limit: 384m
+
+  worker:
+    <<: *backend
+    image: stockeye-inferencia:${STOCKEYE_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.inferencia
+    command: ["python", "-m", "stockeye.cli", "worker"]
+    environment:
+      <<: *entorno
+      WORKER_RECINTOS: ${WORKER_RECINTOS:-*}
+      ORT_HILOS: ${ORT_HILOS:-}
+      INFERENCIA_DISPOSITIVO: ${INFERENCIA_DISPOSITIVO:-cpu}
+    volumes:
+      - datos:/data
+      - ${MODELOS_HOST:-./backend/modelos}:/modelos:ro
+    mem_limit: 1200m
+    stop_grace_period: 20s
+
+  notificador:
+    <<: *backend
+    command: ["python", "-m", "stockeye.cli", "notificador"]
+    mem_limit: 160m
+    healthcheck: { disable: true }
+
+  ia:
+    <<: *backend
+    command: ["python", "-m", "stockeye.cli", "ia"]
+    mem_limit: 200m
+    healthcheck: { disable: true }
+
+  # Fotos reales por carpeta: deja JPEG/PNG en ./entradas/<RECINTO>/<GÓNDOLA>/ (ver entradas/LEEME.txt)
+  importador:
+    <<: *backend
+    command: ["python", "-m", "stockeye.cli", "importador"]
+    environment:
+      <<: *entorno
+      ENTRADAS_DIR: /entradas
+    volumes:
+      - datos:/data
+      - ${ENTRADAS_HOST:-./entradas}:/entradas
+    mem_limit: 160m
+    healthcheck: { disable: true }
+
+  web:
+    image: stockeye-web:${STOCKEYE_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    ports:
+      - "${WEB_PUERTO:-8080}:80"
+    depends_on: [api]
+    mem_limit: 64m
+    restart: unless-stopped
+    logging: *logs
+
+  # Datos de demostración (solo desarrollo): docker compose --profile demo run --rm seed
+  seed:
+    <<: *backend
+    profiles: ["demo"]
+    image: stockeye-inferencia:${STOCKEYE_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.inferencia
+    command: ["sh", "-c", "python -m stockeye.cli db seed && python -m stockeye.cli demo imagenes"]
+    environment:
+      <<: *entorno
+      DB_DIR: /app/db
+    volumes:
+      - datos:/data
+      - ./db:/app/db:ro
+    restart: "no"
+
+volumes:
+  pgdata:
+  datos:

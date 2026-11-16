@@ -1,0 +1,174 @@
+{
+  "esquema": "stockeye-backend-1",
+  "analisis_id": "a488a93943724f1ca14c57ea4bdb64be",
+  "captura_id": "a488a93943724f1ca14c57ea4bdb64be",
+  "foto": "IMG-20261005-WA0027.jpg",
+  "sucursal_id": 2,
+  "sucursal": "Sucursal 2",
+  "sha256_original": "442b96d898a14582c32d616bace042814e7fb20f555d7d3889a5b8e14a4e40e6",
+  "fecha_analisis": "2026-11-07T16:17:19.124525+00:00",
+  "estado_proceso": "completado",
+  "estado_medicion": "parcial",
+  "version_modelo": "pt-6f01f5f967ec",
+  "modelo_sha256": "6f01f5f967ece93a77107b9ac82765e3d817858128511d926fc221616bf22b2d",
+  "pipeline": "stockeye-v6-corregido-1",
+  "segundos": 20.4812,
+  "operacion": {
+    "modo": "mosaicos+tta",
+    "umbral_vacio": 0.5
+  },
+  "recursos": {
+    "ram_gb": 0.5547714233398438,
+    "vram_gb": 0.0
+  },
+  "dimensiones": {
+    "ancho": 1600,
+    "alto": 900
+  },
+  "coordenadas": "pixeles_de_imagen_original_decodificada_con_orientacion_exif",
+  "cantidad_gondolas_detectadas": 1,
+  "cantidad_regiones_vacias": 4,
+  "gondolas": [
+    {
+      "id_local": 1,
+      "gondola_id": null,
+      "estado": "parcial",
+      "pct_vacio_observado": 1.03,
+      "pct_vacio_gondola_completa": null,
+      "pct_vacio_rectificado": 1.16,
+      "semaforo": "revisar",
+      "alerta": false,
+      "cantidad_regiones_vacias": 4,
+      "unidad_conteo": "regiones_conexas_no_instancias",
+      "cobertura_roi": null,
+      "cuadrilatero": [
+        [
+          0.0,
+          173.0
+        ],
+        [
+          1570.0,
+          172.0
+        ],
+        [
+          1032.0,
+          899.0
+        ],
+        [
+          0.0,
+          899.0
+        ]
+      ],
+      "repisas_confiables": true,
+      "motivo_repisas": "bordes_y_areas_validos",
+      "repisas": [
+        {
+          "numero": 1,
+          "pct": 0.89,
+          "area": 199365,
+          "cuadrilatero": [
+            [
+              0.0,
+              173.0
+            ],
+            [
+              1570.0,
+              172.0
+            ],
+            [
+              1473.949951171875,
+              301.7900085449219
+            ],
+            [
+              0.0,
+              302.55999755859375
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 2,
+          "pct": 0.0,
+          "area": 230585,
+          "cuadrilatero": [
+            [
+              0.0,
+              302.55999755859375
+            ],
+            [
+              1473.949951171875,
+              301.7900085449219
+            ],
+            [
+              1353.8499755859375,
+              464.0799865722656
+            ],
+            [
+              0.0,
+              464.6000061035156
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 3,
+          "pct": 0.54,
+          "area": 189497,
+          "cuadrilatero": [
+            [
+              0.0,
+              464.6000061035156
+            ],
+            [
+              1353.8499755859375,
+              464.0799865722656
+            ],
+            [
+              1244.739990234375,
+              611.530029296875
+            ],
+            [
+              0.0,
+              611.8400268554688
+            ]
+          ],
+          "semaforo": "revisar"
+        },
+        {
+          "numero": 4,
+          "pct": 2.42,
+          "area": 290456,
+          "cuadrilatero": [
+            [
+              0.0,
+              611.8400268554688
+            ],
+            [
+              1244.739990234375,
+              611.530029296875
+            ],
+            [
+              1032.0,
+              899.0
+            ],
+            [
+              0.0,
+              899.0
+            ]
+          ],
+          "semaforo": "revisar"
+        }
+      ]
+    }
+  ],
+  "archivos": {
+    "original": "original.jpg",
+    "mascara": "mascara.png",
+    "superpuesta": "superpuesta.jpg"
+  },
+  "sha256_archivos": {
+    "original.jpg": "442b96d898a14582c32d616bace042814e7fb20f555d7d3889a5b8e14a4e40e6",
+    "mascara.png": "7a9f6af5a41a544510494261eac0c01ebb26153e19d51db31a8e70ad07fa2255",
+    "superpuesta.jpg": "7e1b3f7bf1a04b84fd5ea7aaee92710775c9ef70e537ebd19d3c0365bfdd6d7d"
+  }
+}

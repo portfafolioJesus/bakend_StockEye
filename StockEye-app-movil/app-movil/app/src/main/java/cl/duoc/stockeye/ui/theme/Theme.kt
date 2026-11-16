@@ -12,37 +12,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+// Colores de los mockups de StockEye
 object Marca {
-    val Azul = Color(0xFF12355E)
-    val AzulClaro = Color(0xFF1E5AA8)
-    val Fondo = Color(0xFFF3F5F9)
+    val Naranjo = Color(0xFFEA580C)          // botón "Tomar foto", vacíos
+    val NaranjoSuave = Color(0xFFFFF4EC)
+    val NaranjoTexto = Color(0xFFC2410C)
+    val Azul = Color(0xFF1D3FD1)             // acción principal
+    val Tinta = Color(0xFF0F172A)
+    val Fondo = Color(0xFFF3F4F6)
+    val Borde = Color(0xFFE2E8F0)
+    val Gris = Color(0xFF64748B)
+    val Ia = Color(0xFF6D28D9)
+    val IaSuave = Color(0xFFF3EFFF)
+    val Verde = Color(0xFF15803D)
+    val VerdeSuave = Color(0xFFF0FDF4)
+    val Camara = Color(0xFF0B1220)          // fondo oscuro de la pantalla de cámara
 }
 
-object ColoresSemaforo {
-    val Verde = Color(0xFF2E9E5B)
-    val Amarillo = Color(0xFFF2B705)
-    val AmarilloTexto = Color(0xFF9A6B00)
-    val Rojo = Color(0xFFE5484D)
-    val Gris = Color(0xFF8A94A6)
+object ColoresPrioridad {
+    val Baja = Color(0xFF94A3B8)
+    val Media = Color(0xFFF59E0B)
+    val Alta = Color(0xFFDC2626)
+    val Critica = Color(0xFF7F1D1D)
 }
 
 private val Esquema = lightColorScheme(
-    primary = Marca.AzulClaro,
+    primary = Marca.Azul,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFDCE8F7),
-    onPrimaryContainer = Color(0xFF0B2545),
-    secondary = Color(0xFF0F8A7E),
+    primaryContainer = Color(0xFFE0E7FF),
+    onPrimaryContainer = Color(0xFF1E1B4B),
+    secondary = Marca.Naranjo,
     onSecondary = Color.White,
-    secondaryContainer = Color(0xFFD3EFEA),
-    onSecondaryContainer = Color(0xFF06302B),
     background = Marca.Fondo,
-    onBackground = Color(0xFF161A20),
+    onBackground = Marca.Tinta,
     surface = Color.White,
-    onSurface = Color(0xFF161A20),
-    surfaceVariant = Color(0xFFE8ECF2),
-    onSurfaceVariant = Color(0xFF5A6270),
-    outline = Color(0xFFC9D0DA),
-    error = ColoresSemaforo.Rojo
+    onSurface = Marca.Tinta,
+    surfaceVariant = Color(0xFFF1F5F9),
+    onSurfaceVariant = Marca.Gris,
+    outline = Color(0xFFCBD5E1),
+    error = Color(0xFFB91C1C)
 )
 
 private val Formas = Shapes(
@@ -57,7 +65,7 @@ private val base = Typography()
 private val Tipografia = base.copy(
     headlineMedium = base.headlineMedium.copy(fontWeight = FontWeight.Bold),
     headlineSmall = base.headlineSmall.copy(fontWeight = FontWeight.Bold),
-    titleLarge = base.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+    titleLarge = base.titleLarge.copy(fontWeight = FontWeight.Bold),
     titleMedium = base.titleMedium.copy(fontWeight = FontWeight.SemiBold),
     labelSmall = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Medium, letterSpacing = 0.4.sp)
 )
