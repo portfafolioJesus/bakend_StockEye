@@ -1,0 +1,18 @@
+flowchart TD
+I((Inicio)):::ini --> A[Reponedor: repone el producto en la góndola]:::rep
+A --> B[Reponedor: toma foto de verificación en la app]:::rep
+B --> C[Worker: analiza la foto]:::sis
+C --> D{¿% vacío bajo el umbral?}
+D -- Sí --> E[App: indica cierre verificado]:::sis
+D -- No --> G{¿Repetir la foto?}
+G -- Sí --> A
+G -- No --> H[Reponedor: escribe comentario obligatorio]:::rep --> J
+E --> J[Reponedor: pulsa Cerrar ticket]:::rep
+J --> K[Sistema: estado CERRADO, guarda foto de cierre e historial]:::sis
+K --> L[Notificador: avisa al supervisor]:::sis
+L --> F(((Fin)))
+classDef rep fill:#e8f5e9,stroke:#2e7d32,color:#1b1b1b
+classDef sup fill:#e3f2fd,stroke:#1565c0,color:#1b1b1b
+classDef adm fill:#fff3e0,stroke:#ef6c00,color:#1b1b1b
+classDef sis fill:#f3e5f5,stroke:#6a1b9a,color:#1b1b1b
+classDef ini fill:#222,stroke:#222,color:#fff

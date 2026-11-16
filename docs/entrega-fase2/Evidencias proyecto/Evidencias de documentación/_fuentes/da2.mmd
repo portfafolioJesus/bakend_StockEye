@@ -1,0 +1,21 @@
+flowchart TD
+I((Inicio)):::ini --> A[Reponedor: pulsa Tomar foto de góndola]:::rep
+A --> B{¿Usar código QR?}
+B -- Sí --> B1[Reponedor: escanea QR de la góndola]:::rep --> C
+B -- No --> B2[Reponedor: elige la góndola de la lista]:::rep --> C
+C[Reponedor: toma la foto o la elige de la galería]:::rep --> D[App: sube la foto a la API]:::sis
+D --> E{¿Hay conexión?}
+E -- No --> E1[App: muestra error y permite reintentar]:::sis --> D
+E -- Sí --> G[Worker: analiza la foto y calcula % de vacío]:::sis
+G --> H[App: muestra foto anotada y % de vacío]:::sis
+H --> J{¿Supera el umbral?}
+J -- No --> J1[Reponedor: descarta la foto]:::rep --> F1(((Fin)))
+J -- Sí --> K[Reponedor: revisa título, producto sugerido y agrega comentario]:::rep
+K --> L[Reponedor: pulsa Crear ticket]:::rep
+L --> M[Sistema: crea ticket asignado al reponedor con la foto como evidencia]:::sis
+M --> F2(((Fin)))
+classDef rep fill:#e8f5e9,stroke:#2e7d32,color:#1b1b1b
+classDef sup fill:#e3f2fd,stroke:#1565c0,color:#1b1b1b
+classDef adm fill:#fff3e0,stroke:#ef6c00,color:#1b1b1b
+classDef sis fill:#f3e5f5,stroke:#6a1b9a,color:#1b1b1b
+classDef ini fill:#222,stroke:#222,color:#fff

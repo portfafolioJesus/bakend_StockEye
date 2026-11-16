@@ -1,0 +1,23 @@
+flowchart TD
+I((Inicio)):::ini --> A[Capturador: toma foto de la cámara según intervalo]:::sis
+A --> B{¿Cámara responde?}
+B -- No --> B1[Capturador: reporta error de cámara]:::sis --> F1(((Fin)))
+B -- Sí --> C[API: valida API key y guarda la foto como PENDIENTE]:::sis
+C --> D[Worker: toma la foto por turno de recinto]:::sis
+D --> E[Worker: calcula % de vacío con el modelo activo y guarda imagen anotada]:::sis
+E --> G{¿% vacío supera el umbral del recinto?}
+G -- No --> G1[BD: guarda la predicción en el historial]:::sis --> F2(((Fin)))
+G -- Sí --> H{¿La góndola ya tiene ticket de cámara abierto?}
+H -- Sí --> H1[BD: agrega foto como SEGUIMIENTO y recalcula prioridad]:::sis --> F3(((Fin)))
+H -- No --> J[BD: crea ticket INC con prioridad según % vacío]:::sis
+J --> K[Notificador: avisa a supervisores del recinto]:::sis
+J --> L{¿Integración IA activa?}
+L -- Sí --> L1[Servicio IA: sugiere producto faltante]:::sis --> M
+L -- No --> M[Supervisor: ve el ticket nuevo en la bandeja]:::sup
+K --> M
+M --> F4(((Fin)))
+classDef rep fill:#e8f5e9,stroke:#2e7d32,color:#1b1b1b
+classDef sup fill:#e3f2fd,stroke:#1565c0,color:#1b1b1b
+classDef adm fill:#fff3e0,stroke:#ef6c00,color:#1b1b1b
+classDef sis fill:#f3e5f5,stroke:#6a1b9a,color:#1b1b1b
+classDef ini fill:#222,stroke:#222,color:#fff

@@ -1,0 +1,18 @@
+flowchart TD
+I((Inicio)):::ini --> A[Usuario: ingresa correo y contraseña]:::sup
+A --> B[API: busca el usuario y compara el hash de la clave]:::sis
+B --> C{¿Credenciales válidas y usuario activo?}
+C -- No --> C1[Sistema: muestra error]:::sis --> A
+C -- Sí --> D[API: entrega token de acceso y de refresco con rol y recintos]:::sis
+D --> E{Rol}
+E -- Reponedor --> E1[App: Mis tickets]:::rep
+E -- Supervisor --> E2[Panel: Bandeja de tickets]:::sup
+E -- Administrador --> E3[Panel: Bandeja y Configuración]:::adm
+E1 --> F(((Fin)))
+E2 --> F
+E3 --> F
+classDef rep fill:#e8f5e9,stroke:#2e7d32,color:#1b1b1b
+classDef sup fill:#e3f2fd,stroke:#1565c0,color:#1b1b1b
+classDef adm fill:#fff3e0,stroke:#ef6c00,color:#1b1b1b
+classDef sis fill:#f3e5f5,stroke:#6a1b9a,color:#1b1b1b
+classDef ini fill:#222,stroke:#222,color:#fff
