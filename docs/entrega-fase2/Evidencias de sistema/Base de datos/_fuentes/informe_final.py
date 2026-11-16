@@ -78,11 +78,12 @@ llenar(t2.rows[2].cells[1], [
 ])
 # 3. Metodología
 llenar(t2.rows[3].cells[1], [
-    ("p", "Se usó un enfoque híbrido: CRISP-DM para el modelo de visión y Scrum (con tablero Kanban en Jira) para el producto."),
+    ("p", "En la Fase 1 definimos un enfoque Kanban + CRISP-DM: CRISP-DM para el modelo de visión y la Carta Gantt para el seguimiento de actividades. Para la entrega final ordenamos ese trabajo en formato Scrum."),
     ("pb", "CRISP-DM: ", "ordenó el trabajo del modelo en sus fases: comprensión del negocio (kickoff con Walmart y criterio de éxito), comprensión de los datos (análisis de imágenes reales y datasets públicos), preparación (etiquetado, división por series, aumento de datos), modelado (YOLO baseline y luego segmentación SegFormer), evaluación (métricas internas y tiempos) y despliegue (exportación a ONNX)."),
-    ("pb", "Scrum: ", "el producto se dividió en 8 épicas y 31 historias de usuario priorizadas con MoSCoW y valor/esfuerzo, trabajadas en 8 sprints de 2 semanas (agosto a noviembre). El largo del sprint coincide con el ciclo de evaluación de Walmart (~2 semanas), así cada sprint termina con algo revisable por el cliente o el docente."),
+    ("pb", "Scrum: ", "el producto se organizó en 8 épicas y 31 historias de usuario priorizadas con MoSCoW y valor/esfuerzo. El trabajo del semestre se agrupó en 8 sprints de 2 semanas (agosto a noviembre), el mismo largo del ciclo de evaluación de Walmart. Estos sprints son una reconstrucción hecha al cierre a partir de la Carta Gantt y del repositorio. El 10-11-2026 pasamos la Gantt a un tablero en Jira para ordenar el cierre del proyecto."),
+    ("pb", "Coordinación: ", "reuniones de equipo los jueves y viernes, reuniones de 1 a 2 horas los fines de semana, consultas con el profesor los viernes y comunicación diaria por WhatsApp y Discord."),
     ("pb", "Roles: ", "Product Owner José Larraín (Walmart, área de IA); docente guía Arturo Vargas; Scrum Master Claudio Galiano; equipo de desarrollo Jesús González (backend, base de datos, panel web), Ignacio Ruz (datos y modelo) y Claudio Galiano (app móvil y UI/UX)."),
-    ("pb", "Pertinencia: ", "un modelo de IA necesita experimentación iterativa sobre los datos, y CRISP-DM está pensado justamente para eso. El sistema que lo rodea, en cambio, se beneficia de entregas cortas y de priorizar lo que aporta valor al cliente, que es lo que ofrece Scrum. Combinarlos permitió avanzar en paralelo en el modelo y en la aplicación sin que uno bloqueara al otro."),
+    ("pb", "Pertinencia: ", "un modelo de IA necesita experimentar varias veces con los datos y CRISP-DM está pensado para eso. El sistema alrededor del modelo, en cambio, se beneficia de entregas cortas y de priorizar lo que le sirve al cliente, que es lo que aporta Scrum. Con esta combinación pudimos avanzar en paralelo en el modelo y en la aplicación."),
 ])
 # 4. Desarrollo
 llenar(t2.rows[4].cells[1], [
@@ -106,7 +107,7 @@ llenar(t2.rows[4].cells[1], [
     ("li", "Datos: ", "fotos propias en terreno (2 y 5 de octubre), división del dataset por series completas, recortes centrados y mosaicos para vacíos pequeños."),
     ("li", "Modelo: ", "se pasó de cajas (YOLO) a segmentación por píxel (SegFormer), que entrega un % de vacío más preciso, y se exportó a ONNX para correr en CPU en 1,1 a 2,0 s por foto."),
     ("li", "Producto: ", "la alerta con semáforo evolucionó a un ticket con estados, prioridad automática, historial y cierre verificado con foto; el umbral fijo de 30 % pasó a ser configurable por recinto."),
-    ("li", "Gestión: ", "se ordenó el trabajo en sprints de 2 semanas y se separaron carriles por área en Jira."),
+    ("li", "Gestión: ", "separamos el trabajo por área (modelo, backend y web, app y documentación) y al cierre pasamos la Carta Gantt a un tablero en Jira."),
 ])
 # 5. Evidencias
 E = lambda n: f"{IMG}/{n}"
@@ -128,5 +129,10 @@ llenar(t2.rows[6].cells[1], [
     ("pb", "Jesús González: ", "mi interés era proyectarme hacia roles de ingeniería de software más exigentes, profundizando en frontend y backend e integración de sistemas complejos. En StockEye construí la API, la base de datos, el panel web y el despliegue con Docker, integrando un modelo de IA en un sistema real. Mis intereses se mantienen y se fortalecieron hacia la arquitectura de software y el backend."),
     ("pb", "Ignacio Ruz: ", "mis intereses apuntaban a la ciencia de datos y el backend. Trabajar con imágenes reales, etiquetado, entrenamiento y evaluación de modelos con restricciones de hardware me permitió conocer el ciclo completo de un modelo de visión hasta su despliegue. Quiero seguir profundizando en machine learning aplicado y en llevar modelos a producción (MLOps)."),
 ])
+for p in d.element.body.iter("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t"):
+    if p.text == "3.":
+        prev = p.getparent().getprevious()
+        if prev is not None and "Guía" in "".join(prev.itertext()):
+            p.text = " 2.6"; p.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
 d.save(DST)
 print("ok")
