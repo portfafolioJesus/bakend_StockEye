@@ -21,3 +21,6 @@ dist/
 *.pt
 *.onnx
 **/camaras.json
+
+# Paquete de entrenamiento conservado solo en este equipo
+/portafolio de titulo jesus-kevin-ignacio/FINAL FASE 2/evidencia de proyecto/Evidencias de sistema/Aplicación/APK sistema/stockeye_v6-20261116T000048Z-1-001.zip
