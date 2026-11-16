@@ -81,7 +81,7 @@ Prioridad automática según % de vacío: `< 10` BAJA · `≥ 10` MEDIA · `≥ 
 | Worker de inferencia | Python · Ultralytics YOLO | Carga `best.pt` una vez, procesa imágenes pendientes, guarda predicciones y llama a `fn_ticket_desde_prediccion`. |
 | Cola | MVP: la propia tabla `imagen` (`FOR UPDATE SKIP LOCKED`). Luego: Redis + RQ/Celery | Desacoplar la API de la inferencia. |
 | Almacenamiento de fotos | MVP: carpeta por recinto (`recintos/R01/...`). Producción: MinIO o S3 con las mismas rutas | Guardar originales e imágenes anotadas. |
-| Capturador | Python + ffmpeg (`capturador/capturador.py`) | Corre en cada recinto, toma fotos de las cámaras y las sube a la API. |
+| Capturador | Python + ffmpeg (`db/capturador/capturador.py`) | Corre en cada recinto, toma fotos de las cámaras y las sube a la API. |
 | App móvil | Kotlin · Jetpack Compose · CameraX · Retrofit · FCM | App del reponedor. |
 | Panel web | Framework a elección (React, Vue, …) consumiendo la API | Supervisor y administrador. |
 | IA de producto (opcional) | API de un LLM con visión | Identificar el producto faltante. La API key va en variables de entorno o gestor de secretos, **nunca en la BD**. |
@@ -368,7 +368,7 @@ reponia/
 │   ├── schema.sql           ← esquema completo (fuente de verdad)
 │   ├── seed_demo.sql        ← datos de prueba
 │   └── tests/test_reglas.sql
-├── capturador/
+├── db/capturador/
 │   ├── capturador.py        ← corre en cada recinto
 │   └── camaras.ejemplo.json
 ├── backend/                 ← por crear
@@ -424,9 +424,9 @@ psql -d reponia -f db/tests/test_reglas.sql  # cada bloque debe fallar con un ER
 
 # Capturador (en el equipo del recinto)
 pip install requests        # y tener ffmpeg instalado
-cp capturador/camaras.ejemplo.json capturador/camaras.json   # completar IPs, usuario de solo lectura y API keys
+cp db/capturador/camaras.ejemplo.json db/capturador/camaras.json   # completar IPs, usuario de solo lectura y API keys
 export REPONIA_API_URL="https://<servidor>/api/v1/ingesta"
-python capturador/capturador.py capturador/camaras.json
+python db/capturador/capturador.py db/capturador/camaras.json
 ```
 
 **Primera tarea para Claude Code:** Fase 1. Crear `backend/` con FastAPI y el worker, montar `docker-compose.yml` (postgres + api + worker) aplicando `db/schema.sql` al iniciar, e implementar `POST /ingesta`, el worker de §9 y `GET /tickets`, con tests que repitan el escenario de `seed_demo.sql`.

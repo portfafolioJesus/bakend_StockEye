@@ -1,6 +1,6 @@
 # StockEye
 
-Detección de vacíos en góndolas de supermercado. Cámaras y celulares envían fotos, un modelo de segmentación (SegFormer → ONNX) calcula el **% de vacío**, y si supera el umbral del recinto se abre un **ticket** (`INC000001`…). El supervisor lo asigna desde el panel web y el reponedor lo cierra en la app con una **foto de verificación**.
+Detección de vacíos en góndolas de supermercado. Cámaras y celulares envían fotos, un modelo de segmentación (SegFormer → ONNX) calcula el **% de vacío**, y si supera el umbral del recinto se abre un **ticket** (`INC000001`…). El sistema lo asigna al reponedor con menor carga activa del recinto; el supervisor puede reasignarlo desde el panel web y el reponedor lo cierra en la app con una **foto de verificación**.
 
 | Pieza | Carpeta | Tecnología |
 |---|---|---|
@@ -8,7 +8,7 @@ Detección de vacíos en góndolas de supermercado. Cámaras y celulares envían
 | API + microservicios | `backend/` | FastAPI async · worker de inferencia (onnxruntime, CPU ≤3 s/foto) · notificador (FCM + Web Push) · IA de producto (Groq, intercambiable) |
 | Panel web | `web/` | React + Vite + TypeScript + Tailwind (supervisor y administrador) |
 | App Android | `StockEye-app-movil/app-movil/` | Kotlin + Compose · CameraX · Retrofit · FCM (reponedor) |
-| Capturador | `capturador/` | Python + ffmpeg, corre en cada recinto |
+| Capturador | `db/capturador/` | Python + ffmpeg, corre en cada recinto |
 | Backend anterior | `StockEye_backend_local/` | Legado: de aquí se portó el modelo SegFormer |
 
 ## Inicio rápido
@@ -18,7 +18,7 @@ cp .env.example .env            # completar POSTGRES_PASSWORD y JWT_SECRETO (ope
 docker compose up -d --build
 docker compose exec api python -m stockeye.cli modelo registrar /modelos/segformer-mit-b1-v1.json --activar
 docker compose --profile demo run --rm seed      # opcional: datos de demostración
-# Fotos reales: cópialas a entradas/R01/<GÓNDOLA>/ o usa "Subir fotos" en el panel
+# Fotos sin clasificar: entradas/R01/por_clasificar/ o R02/por_clasificar/
 # Panel: http://localhost:8080  ·  API: http://localhost:8080/api/docs  ·  DBeaver: localhost:5433
 ```
 

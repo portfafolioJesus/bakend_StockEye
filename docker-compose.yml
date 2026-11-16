@@ -21,14 +21,15 @@ x-backend: &backend
     DATABASE_URL: postgresql://${POSTGRES_USER:-stockeye}:${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}@postgres:5432/${POSTGRES_DB:-stockeye}
     DATOS_DIR: /data
     MODELOS_DIR: /modelos
+    AUTO_MIGRAR: "false"
     FCM_CREDENCIALES: ${FCM_CREDENCIALES:-}
   volumes:
     - datos:/data
     - ${MODELOS_HOST:-./backend/modelos}:/modelos
     - ${SECRETOS_HOST:-./secretos}:/secretos:ro
   depends_on:
-    postgres:
-      condition: service_healthy
+    migrador:
+      condition: service_completed_successfully
   restart: unless-stopped
   logging: &logs
     driver: json-file
@@ -47,7 +48,7 @@ services:
       postgres -c shared_buffers=128MB -c effective_cache_size=384MB -c work_mem=4MB
                -c maintenance_work_mem=64MB -c max_connections=60 -c log_min_duration_statement=500
     volumes:
-      - - pgdata18:/var/lib/postgresql
+      - pgdata:/var/lib/postgresql/data
       - ./backups:/backups
     ports:
       - "${POSTGRES_BIND:-127.0.0.1}:${POSTGRES_PUERTO:-5433}:5432"   # DBeaver / psql desde el host
@@ -59,6 +60,16 @@ services:
     mem_limit: 512m
     restart: unless-stopped
     logging: *logs
+
+  migrador:
+    <<: *backend
+    command: ["python", "-m", "stockeye.cli", "db", "migrar"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    mem_limit: 200m
+    healthcheck: { disable: true }
 
   api:
     <<: *backend
@@ -96,6 +107,12 @@ services:
     mem_limit: 200m
     healthcheck: { disable: true }
 
+  clasificador:
+    <<: *backend
+    command: ["python", "-m", "stockeye.cli", "clasificador"]
+    mem_limit: 200m
+    healthcheck: { disable: true }
+
   # Fotos reales por carpeta: deja JPEG/PNG en ./entradas/<RECINTO>/<GÓNDOLA>/ (ver entradas/LEEME.txt)
   importador:
     <<: *backend
@@ -116,7 +133,9 @@ services:
       dockerfile: web/Dockerfile
     ports:
       - "${WEB_PUERTO:-8080}:80"
-    depends_on: [api]
+    depends_on:
+      api:
+        condition: service_healthy
     mem_limit: 64m
     restart: unless-stopped
     logging: *logs

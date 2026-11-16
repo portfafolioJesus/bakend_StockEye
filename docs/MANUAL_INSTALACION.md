@@ -51,7 +51,7 @@ Repositorio:
 db/              migraciones/001_esquema.sql, 002_produccion.sql · seed/seed_demo.sql · tests/test_reglas.sql
 backend/         stockeye/ (api, inferencia, notificador, ia, core) · herramientas/ · modelos/ · tests/
 web/             panel React + Vite + TypeScript + Tailwind
-capturador/      capturador.py, camaras.ejemplo.json, Dockerfile, servicio systemd
+db/capturador/      capturador.py, camaras.ejemplo.json, Dockerfile, servicio systemd
 StockEye-app-movil/app-movil/   app Android (Kotlin + Compose)
 docker-compose.yml · docker-compose.recintos.yml · .env.example
 ```
@@ -379,16 +379,16 @@ Corre en un mini PC o Raspberry Pi **dentro** de la red del supermercado. Lee la
 4. En el panel, *Agregar cámara*: la URL **sin** usuario ni clave. Copia la API key.
 5. Configura e instala:
    ```bash
-   sudo mkdir -p /etc/stockeye && sudo cp capturador/camaras.ejemplo.json /etc/stockeye/camaras.json
+   sudo mkdir -p /etc/stockeye && sudo cp db/capturador/camaras.ejemplo.json /etc/stockeye/camaras.json
    sudo nano /etc/stockeye/camaras.json        # api_url, api_key, fuente, usuario/clave de solo lectura
    sudo chmod 600 /etc/stockeye/camaras.json
 
    # con Docker
-   docker build -t stockeye-capturador capturador/
+   docker build -t stockeye-capturador db/capturador/
    docker run -d --name capturador --restart unless-stopped --network host \
        -v /etc/stockeye/camaras.json:/config/camaras.json:ro stockeye-capturador
 
-   # o sin Docker (systemd): ver capturador/stockeye-capturador.service
+   # o sin Docker (systemd): ver db/capturador/stockeye-capturador.service
    ```
 6. En el panel, la cámara pasa a **En línea**. Si no envía fotos en 2 veces su intervalo, aparece **Sin señal** y *Diagnosticar* muestra el último error que reportó el capturador.
 

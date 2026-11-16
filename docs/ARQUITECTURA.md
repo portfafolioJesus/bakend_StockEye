@@ -30,7 +30,7 @@ No se usa un broker adicional (Redis, RabbitMQ): PostgreSQL hace de cola con `FO
 | importador | `backend/stockeye/importador/` | archivos en `entradas/<RECINTO>/<GÓNDOLA>/` | `imagen` PENDIENTE (vía la fuente de carga de la góndola) |
 | ia | `backend/stockeye/ia/` | `tarea` ANALISIS_IA (`LISTEN tarea_nueva`) | `analisis_ia`, `ticket.producto_faltante` |
 | web | `web/` | navegador | SPA React; nginx hace de proxy de `/api` |
-| capturador | `capturador/` (en el recinto) | cámaras RTSP/HTTP | `POST /api/v1/ingesta` |
+| capturador | `db/capturador/` (en el recinto) | cámaras RTSP/HTTP | `POST /api/v1/ingesta` |
 
 ## Colas y concurrencia
 

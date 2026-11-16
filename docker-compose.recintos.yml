@@ -14,8 +14,8 @@ x-dedicado: &dedicado
     - datos:/data
     - ${MODELOS_HOST:-./backend/modelos}:/modelos:ro
   depends_on:
-    postgres:
-      condition: service_healthy
+    migrador:
+      condition: service_completed_successfully
   mem_limit: 1200m
   stop_grace_period: 20s
   restart: unless-stopped
