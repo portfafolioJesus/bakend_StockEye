@@ -1,0 +1,3 @@
+-r api.txt
+-r inferencia.txt
+pytest==9.2.0

@@ -1,0 +1,37 @@
+# Workers de inferencia DEDICADOS por recinto (además del pool compartido).
+#
+#   docker compose -f docker-compose.yml -f docker-compose.recintos.yml up -d
+#
+# Úsalo cuando un recinto tenga muchas cámaras: su worker solo toma fotos de
+# ese recinto y nunca compite con los demás. Cada worker ocupa ~0,8–1,2 GB
+# de RAM: con 4 GB caben como máximo 2 workers en total (ajusta ORT_HILOS
+# para no superar los núcleos: hilos × workers ≤ núcleos físicos).
+x-dedicado: &dedicado
+  image: stockeye-inferencia:${STOCKEYE_VERSION:-latest}
+  command: ["python", "-m", "stockeye.cli", "worker"]
+  env_file: .env
+  volumes:
+    - datos:/data
+    - ${MODELOS_HOST:-./backend/modelos}:/modelos:ro
+  depends_on:
+    migrador:
+      condition: service_completed_successfully
+  mem_limit: 1200m
+  stop_grace_period: 20s
+  restart: unless-stopped
+
+services:
+  # El worker del compose base queda para los recintos sin dedicado
+  worker:
+    environment:
+      WORKER_RECINTOS: ${WORKER_RECINTOS_RESTO:-R02}
+      ORT_HILOS: "2"
+
+  worker-r01:
+    <<: *dedicado
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-stockeye}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-stockeye}
+      DATOS_DIR: /data
+      MODELOS_DIR: /modelos
+      WORKER_RECINTOS: R01
+      ORT_HILOS: "2"

@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter Variable", ui-sans-serif, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", monospace;
+
+  --color-marca: #ea580c;
+  --color-marca-suave: #fff4ec;
+  --color-lateral: #0f172a;
+  --color-lateral-2: #1e293b;
+  --color-primario: #1d3fd1;
+  --color-primario-oscuro: #1631a8;
+  --color-fondo: #f3f4f6;
+  --color-tinta: #0f172a;
+  --color-ia: #6d28d9;
+  --color-ia-suave: #f3efff;
+  --color-vacio: #c2410c;
+}
+
+@layer base {
+  html { -webkit-font-smoothing: antialiased; }
+  body { @apply bg-fondo text-tinta font-sans; }
+  h1, h2, h3 { @apply font-display; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-primario; }
+}
+
+@layer components {
+  .tarjeta { @apply rounded-xl border border-slate-200 bg-white; }
+  .campo { @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-tinta placeholder:text-slate-400 focus:border-primario focus:outline-none focus:ring-2 focus:ring-primario/20 disabled:bg-slate-50; }
+  .etiqueta { @apply mb-1 block text-sm font-medium text-slate-700; }
+  .tabla-cabecera { @apply px-4 py-3 text-left text-xs font-semibold tracking-wide whitespace-nowrap text-slate-500 uppercase; }
+}

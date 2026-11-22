@@ -1,0 +1,5 @@
+INFO:     Started server process [4448]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+2026-11-04 23:34:17,432 INFO stockeye: Modelo cargado: pt-6f01f5f967ec
