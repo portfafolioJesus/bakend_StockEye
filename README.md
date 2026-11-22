@@ -55,3 +55,19 @@ Cuenta imágenes, no solo tickets: una foto bajo el umbral también se analiza.
 Los reportes sin ubicación identificada generan tickets independientes si superan
 el umbral; los de una góndola identificada pueden ser seguimiento. Los tickets
 nuevos se asignan al Reponedor activo del recinto con menor carga activa.
+
+
+## Entregas completas en ambos repositorios
+
+El código principal y las entregas académicas se conservan tanto en `bakend_StockEye` como en `proyecto-de-titulo`, con ubicaciones diferentes:
+
+| Material | Este repositorio | Repositorio proyecto-de-titulo |
+|---|---|---|
+| Aplicación, API, web y Android | Raíz del repositorio | `desarrollo/` |
+| Fases 1, 2 y 3, entregas finales y notebook histórico | `portafolio de titulo jesus-kevin-ignacio/` | Carpetas de fases y notebook en la raíz |
+
+El portafolio reúne 77 archivos públicos de entregas. Los datos operativos, configuraciones privadas, dependencias y pesos binarios se preparan por separado. El paquete de entrenamiento de 1,40 GB permanece en el equipo, excluido de Git.
+
+La carpeta local `portafolio de titulo jesus-kevin-ignacio/desarrollo/` conserva una copia adicional de trabajo con sus metadatos y dependencias. Se mantiene localmente: las fuentes de la aplicación ya están versionadas en la raíz de este repositorio. No se eliminó ese directorio ni su Git.
+
+Las copias locales que conservan un Git interno del backend mantienen también las rutas del portafolio que espera ese historial. Cada repositorio conserva su propio historial; publicar en uno no actualiza automáticamente el otro.

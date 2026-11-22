@@ -1,4 +1,4 @@
-# Secretos y datos locales
+
 .env
 secretos/
 backups/
@@ -12,7 +12,7 @@ backend/.venv*/
 web/node_modules/
 web/dist/
 StockEye_backend_local/
-# Fotos reales dejadas para el importador
+
 entradas/
 dist/
 
@@ -22,5 +22,30 @@ dist/
 *.onnx
 **/camaras.json
 
-# Paquete de entrenamiento conservado solo en este equipo
+
 /portafolio de titulo jesus-kevin-ignacio/FINAL FASE 2/evidencia de proyecto/Evidencias de sistema/Aplicación/APK sistema/stockeye_v6-20261116T000048Z-1-001.zip
+
+# Secretos y datos locales
+# Fotos reales dejadas para el importador
+# Paquete de entrenamiento conservado solo en este equipo
+
+# Configuraciones privadas, archivos generados y copia local redundante
+.env.*
+!.env.example
+!.env.*.example
+google-services.json
+*service-account*.json
+*-firebase-adminsdk-*.json
+*.key
+*.pem
+*.jks
+*.keystore
+.gradle/
+.kotlin/
+build/
+local.properties
+.ipynb_checkpoints/
+~$*
+*.tmp
+*.temp
+/portafolio de titulo jesus-kevin-ignacio/desarrollo/
